@@ -1,0 +1,226 @@
+{% load url from future %}
+{% load socialaccount %}
+{% load cache %}
+{% load staticfiles %}<html>
+        <head>
+            <META HTTP-EQUIV="Pragma" CONTENT="no-cache, no-store">
+            <META HTTP-EQUIV="Expires" CONTENT="-1">
+            <title> 
+                {% if request.user.is_authenticated %}
+                    Logged In
+                {% else %}
+                    Not Logged In
+                {% endif %}
+            </title>
+
+            {% cache 36000 standard_cache %}
+                {% block stylesheets %}
+                   
+                     <!-- including all stylesheets -->
+                    <link rel="stylesheet" href="{% static "flat-ui/css/flat-ui.css" %}" />
+                    <link rel="stylesheet" href="{% static "jquery-ui/css/smoothness/jquery-ui.css" %}" />
+                    <!-- bootstrap, metro-ui -->
+                    <link rel="stylesheet" href="{% static "bootstrap3/css/bootstrap.min.css" %}" />
+                    <link rel="stylesheet" href="{% static "metro_ui/css/metro-bootstrap.css" %}" />
+                    <link rel="stylesheet" href="{% static "metro_ui/css/metro-bootstrap-responsive.css" %}" />
+                    <!--datatables css -->
+                    <style type="text/css" title="currentStyle">
+                         @import "{% static "datatables/media/css/dataTables.jqueryui.css" %}";
+                         @import "{% static "datatables/media/css/jquery.dataTables_themeroller.min.css" %}";
+                    </style>
+                    <!-- loading mmenu -->
+                    <link type="text/css" rel="stylesheet" href="{% static "mmenu/src/css/jquery.mmenu.all.css" %}" />
+                     <link rel="stylesheet" href="{% static "atlas-styles.css" %}" />
+                  
+                {% endblock stylesheets %}
+
+                {% block standard-script-block %}
+                    <!-- Order of plugins should be maintained -->
+                    <script src="{% static "metro_ui/docs/js/jquery/jquery.min.js" %}" ></script>
+                    <script src="{% static "metro_ui/docs/js/jquery/jquery.widget.min.js" %}"></script>
+                    <script src="{% static "metro_ui/docs/js/metro.min.js" %}"></script>
+                    <script src="{% static "metro_ui/js/metro-button-set.js" %}"></script>
+                    <!-- jquery ui -->
+                    <script charset="utf-8" src="{% static "jquery-ui/js/jquery-ui-1.10.4.custom.min.js"%}"></script>
+                    <script src="{% static "flat-ui/js/jquery.ui.touch-punch.min.js"%}" ></script>
+                    <!-- bootstrap -->
+                    <script src="{% static "bootstrap3/js/bootstrap.js" %}"></script>
+                    <script src="{% static "bootstrap3/js/bootstrap.min.js" %}"></script>
+                    <!-- mmenu -->
+                    <script type="text/javascript" src="{% static "mmenu/src/js/jquery.mmenu.min.js" %}" ></script>
+                    <!-- datatables -->
+                    <script charset="utf-8" src="{% static "datatables/media/js/jquery.dataTables.min.js"%}"></script>
+                    <script charset="utf8" src="{% static "datatables/media/js/dataTables.jqueryui.js"%}"></script>
+                    <script charset="utf8" src="{% static "datatables/media/js/fnDisplayRow.js"%}"></script>
+                    <script charset="utf8" src="{% static "datatables/media/js/fnStandingRedraw.js"%}"></script>
+                    <script src="{% static "jquery.plugin.min.js" %}"> </script>    
+                    <script src="{% static "jquery.countdown.min.js" %}"> </script> 
+                    <script src="{% static "date.js" %}"></script>
+                    <script src="{% static "sessionvars.js" %}"> </script>
+                {% endblock standard-script-block%}
+          {% endcache %}
+       
+             <!-- declare global variables -->
+        
+            {% block atlas-script-block %}
+                <script>
+                    var default_regions = "{{default_regions|safe}}";
+                    var default_vpcs = "{{default_vpcs|safe}}"; 
+                    var csrftoken = "{{csrf_token}}"
+                </script>
+
+                <!-- atlas specific css and javascript files -->
+                <script src="{% static "atlas_javascripts.js" %}"> </script>
+                {% if environment %}
+                    <!-- scripts for applications page -->
+                    <!-- global variables declaration -->
+                    <script>
+                        {% autoescape off %}
+                            var environment_selected = "{{environment |safe}}";
+                            var global_app_subnets = {{ env_subnets_string | safe }};
+                            var tabs_information = {{tabs_info_string|safe }};
+                            var tabs_list = {{tabs_list_string|safe}};
+                            var module_actions_dict = {{module_actions_dict|safe}};
+                            var region_vpc_dict = {{region_vpc_dict|safe}};
+                            var instance_actions = {{instance_actions| safe}};
+                            var stack_actions = {{stack_actions | safe }};
+                            var group_actions = {{group_actions | safe}};
+                            var vpc_action_parameters = {{vpc_action_parameters|safe}};
+                            var stack_action_parameters = {{stack_action_parameters|safe}};
+                            var environment_subnets_dict = {{environment_subnets_dict|safe}};
+                            var region_vpc_dict = {{region_vpc_dict|safe}};
+                            var not_present_dict = {{not_present_subnet_string|safe}};
+                            var attribute_values_string = {{attribute_values_string|safe}};
+                        //var global_instances_costs = {{ instances_costs_string | safe }};
+                        {% endautoescape %}
+                    </script>
+                    <script src="{% static "applications.js" %}"> </script> 
+                    <script src="{% static "actions.js" %}"></script>
+                {% else %}
+                    <!-- scripts for dashboard page -->
+                    <script src="{% static "dashboard.js" %}"></script>
+                {% endif %}
+
+            {% endblock atlas-script-block %}
+          
+        </head>
+    
+
+        {% block body-id %}
+        <!-- begin body definition -->
+        <body id="base">
+        {% endblock body-id %}
+
+            <div id="navigation" class="metro">
+                
+                <!-- navigation bar -->
+                <nav class="navigation-bar dark">
+                <!-- heavier elements like menus and lists into div tags-->
+                    <nav class="navigation-bar-content">
+                        <!-- Brand -->
+                        <div class="element">
+
+                            <span>
+                                <a href="{{home_url}}/dashboard/">
+                                    Atlas
+                                </a>
+                            </span>  
+                        </div>
+
+                        <!-- user account -->
+                        <div class="element place-right">
+                                
+                            <span id="refresh_data_span"> 
+                                <i id="refresh_data_icon" class="icon-cycle on-right"> 
+                                    Reload 
+                                </i> 
+                            </span>&nbsp;
+                            <a id="home-icon" href="{{home_url}}/dashboard/">
+                                <span> 
+                                    <i class="icon-home on-right">
+                                        Home
+                                    </i> 
+                                </span>
+                            </a>
+                            
+                            
+                            &nbsp;
+                            <a class="dropdown-toggle" id="region-toggle" href="#">
+                                Region
+                            </a>       
+                            &nbsp;&nbsp;
+                            <!-- unordered list for region and vpcs -->
+                            <ul class="dropdown-menu place-right" id="region-dropdown" data-role="dropdown">
+                                {% for region, vpc in default_region_vpc_dict.items %}
+                                    <li>
+                                        <div class="input-control checkbox region-box" id="region-div" data-role="input-control">
+                                        
+                                            <label>
+                                                {% if region in user_region_list %}
+                                                    <input type="checkbox" name="region-checkbox" data-value="{{region}}" checked/>
+                                                        <span class="check"></span>
+                                                {% else %}
+                                                    <input type="checkbox" name="region-checkbox" data-value="{{region}}"/>
+                                                        <span class="check"></span>
+                                                {%endif%}
+                                            
+                                                 {{ region }}
+                                            </label>
+                                        </div> 
+                                            <ul text-align="right" belongs-to="{{region}}">
+                                                {% for index in vpc %}
+                                                <li> 
+                                                    <div class="input-control checkbox vpc-box" data-role="input-control" id="vpc_div">
+                                                        <label>
+                                                            {% if index in user_vpc_list %}
+                                                                    <input type="checkbox" for-region="{{region}}" data-value="{{index}}" checked/>
+                                                                    <span class="check "></span>
+                                                            {% else %}
+                                                                <input type="checkbox"  for-region="{{region}}" data-value="{{index}}"/>
+                                                                    <span class="check"></span>
+                                                            {% endif %}
+                                                            {{ index }}
+                                                        </label>
+                                                    </div>              
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                        <!-- divider for each region -->
+                                         <li class="divider"></li>
+                                    {% endfor %}
+                                </ul>
+                            
+                                <!-- dropdown menu for user options -->
+                                <a class="dropdown-toggle" id="user-toggle" href="#">
+                                    <span class="icon-user on-left"></span>
+                                    {{ request.user.username }}
+                                </a>
+                            <ul class="dropdown-menu place-right" id="user-dropdown" data-role="dropdown">
+                                <li><a href="#">My Account</a></li>
+                                 <li class="divider"></li>
+                                <li><a href="{{home_url/accounts/logout/">Logout</a></li>
+                            </ul>
+                         </div>         
+                    </nav>
+                </nav>
+                
+            </div>
+            <div class="titleclass pull-right">
+                <div class="btn-group" data-toggle="buttons" >
+                        {% for region in region_list %}
+                          <label class="btn btn-default">
+                            <input type="checkbox" /> {{ region }}
+                          </label>
+                        {% endfor %}
+                </div>
+            </div>
+
+
+        {% block body-content %} 
+
+        <!-- empty body content -->
+        {%endblock body-content %} 
+   
+    </body>
+</html>

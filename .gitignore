@@ -1,0 +1,6 @@
+*.DS-Store
+*.py~
+*.pyc
+*.log
+site_and_social_fixture.json
+staticfiles/*

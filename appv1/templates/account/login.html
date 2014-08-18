@@ -1,0 +1,45 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load account %}
+{% load url from future %}
+
+{% block head_title %}{% trans "Atlas" %}{% endblock %}
+{% block bodytag %} <body class="login"> {%endblock %}
+{% block content %}
+
+    {% include "socialaccount/snippets/login_extra.html" %}
+    <div id="container">
+        <div id="header"><h2>{% trans "Atlas Login" %}</h2></div>
+        <form class="login" method="POST" action="{% url 'account_login' %}">
+          {% csrf_token %}
+            {{ form.non_field_errors }}
+            <table> 
+              <tr>
+            	  <td> {% trans "Username  " %} </td>
+            	  <td><input id="id_login" class="login-input" maxlength="30" name="login" placeholder="Username" type="text" />{{ form.login.errors }}</td>
+              </tr>
+              <tr>
+            	  <td> {% trans "Password " %}</td>
+            	  <td>
+                  <input id="id_password"  class="login-input" name="password" placeholder="Password" type="password" />{{ form.password.errors }}</td>
+              </tr>
+              {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+              {% endif %}
+		        </table>	
+            <br>
+            <center> <button class="btn" type="submit">{% trans "Sign In" %}</button> </center>
+        </form>
+        </br>
+        <div class="footnote">
+        	 <a href="/accounts/google/login"> 
+              <center>
+                  <button class="btn"><img src="/static/icons/google_signup.ico" style="width:20px;height:20px;vertical-align:middle"></img>
+                    {% trans "Login with Google" %}
+                  </button> 
+              </center>
+            </a>  
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,219 @@
+{% extends "appv1/base.html" %}
+{% url "socialauth_begin" "backend-name" %}
+{% load staticfiles %}
+
+{% block content %}
+    
+{% block body-id %}
+<body id="dashboard">
+{% endblock body-id %}
+
+{% block body-content %}
+
+<!-- Button trigger modal -->
+<div id="body-content" class="metro" style = "position:relative; width=100%">
+    <div class="panel">
+        <div class="panel-header fg-lightGray" style="background-color:#52527A;"> 
+            <div class="panel-title">
+                <font size="5">Dashboard </font> 
+                <font size="5">
+                    <span><a class="icon-cog fg-lightGray" 
+                            data-toggle="modal" 
+                            data-target="#configuration-modal" 
+                            id="configure"
+                            data-toggle="tooltip"
+                            title="Configure dashboard status"
+                            data-trigger="hover focus"
+                            data-placement="auto"
+                            data-template = '<div class="tooltip" role="tooltip">
+                            <div class="tooltip-inner"></div>
+                            <div class="tooltip-arrow"></div></div>'></a></span>
+                </font>  
+            </div>      
+        </div>
+        <font size="4"> Overall: </font>
+        {% for aggregate, value in aggregate_values %}
+            <font color="blue" <b> {{aggregate}} : </b> </font>&nbsp;{{value}}&nbsp;&nbsp 
+        {%endfor %}
+        
+        <div class="panel-content" style = "position:absolute">
+            <br>
+            <br>
+    
+            <a class="select-environments place-right" data-toggle="modal" data-target="#environment-modal" id="environment-config" href="#" > configure environments </a>
+            
+            {% for env, status_info in dash_status_info.items %}
+            
+                <div class="env-status-bar" data-name="{{env}}">
+             
+                    <div class="tile quadro-full" data-name="{{env}}"> 
+                        <div class="tile double environment-bar" 
+                             data-name="{{env}}" 
+                             for-env="{{env}}"
+                             data-toggle="tooltip"
+                             title="environment"
+                             data-trigger="hover focus"
+                             data-placement="auto"
+                             data-template = '<div class="tooltip" role="tooltip">
+                             <div class="tooltip-inner"></div>
+                             <div class="tooltip-arrow"></div></div>'>
+                            <center> <h2> {{env}}  </h2>  </center> 
+                        </div>
+                        
+                        {% for index in status_info %}
+
+
+                            <div class="tile status-value-bar" 
+                                 data-name="{{index.0}}" 
+                                 for-env="{{env}}" 
+                                 style="display:none"
+                                 data-toggle="tooltip"
+                                 title="{{index.0}}"
+                                 data-trigger="hover focus"
+                                 data-placement="auto"
+                                 data-template = '<div class="tooltip" role="tooltip">
+                                 <div class="tooltip-inner"></div>
+                                 <div class="tooltip-arrow"></div></div>'> 
+                            {% ifequal index.2 "right" %}
+                                    <center> <h2> {{index.3}}  </h2>  </center> 
+                                    <span class="label fg-blue"><img class="status-icon" src="{{index.1}}"> </img></span>
+                            {% endifequal %}
+                             {% ifequal index.2 "center" %}
+                        
+                                    <center> <h2> {{index.3}}  </h2>  </center> 
+                                    <span class="label fg-blue"><img class="status-icon" src="{{index.1}}"> </img></span>
+                
+                            {% endifequal %}
+                              {% ifequal index.2 "none" %}
+                                    <center> <h2> {{index.3}}  </h2>  </center> 
+                                    <span class="label fg-blue"> {{index.0}} </span>
+                            {% endifequal %}
+                                
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>  
+                            
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="configuration-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="width:auto; height:auto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title" id="myModalLabel">Status options</h3>
+            </div>
+
+            <div class="modal-body">
+                <div class="control-groups">
+                <table>
+                    {% if not selected_dash_status %}
+                        {% for options in dash_statuses %}  
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="config-controls" id="config-controls" data-value="{{options}}" checked>
+                                    <font size="4"> {{ options }} </font> 
+                                </td>
+                            </tr>
+                        {%endfor %}
+                    {% else %}
+                        {% for options in dash_statuses %}          
+                            {% if options in selected_dash_status %}  
+                                <tr>
+                                    <td>    
+                                        <input type="checkbox" name="config-controls" id="config-controls" data-value="{{options}}" checked>
+                                        <font size="4"> 
+                                            {{ options }} 
+                                        </font> 
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="config-controls" id="config-controls" data-value="{{options}}">
+                                        <font size="4"> 
+                                            {{ options }} 
+                                        </font>
+                                    </td>
+                                </tr>
+                            {% endif %} 
+                        {% endfor %}                   
+                    {% endif %}
+                </table>
+                    
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="close-config-modal">Close</button>
+                <button type="button" class="btn btn-primary" id="save-config">Save</button>
+            </div>
+        </div>
+    </div>
+</div>  
+
+
+<div class="modal fade" id="environment-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h3 class="modal-title" id="myModalLabel">Environments</h3>
+          </div>
+          <div class="modal-body">
+                <div class="control-groups">  
+                    <table>   
+                        {% if not selected_dash_env %}
+                            {% for environments in dash_environments %} 
+                               <tr> 
+                                    <td> 
+                                        <input type="checkbox" name="env-controls" data-value="{{ environments }}" checked>
+                                        <font size="4"> 
+                                            {{ environments }} 
+                                        </font> 
+                                    </td> 
+                                </tr>
+                            {% endfor %}
+                        {%else%}
+                            {% for environments in dash_environments %}
+                                {% if environments in selected_dash_env %} 
+                                      
+                                    <!-- <label class="checkbox fg-lightGray" for="app-checkbox"> -->
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" name="env-controls" id="env-controls" data-value="{{ environments }}" checked>
+                                                <font size="4"> 
+                                                    {{ environments }}
+                                                </font> 
+                                            </td>
+                                        </tr>
+                                    <!-- </label> -->
+                                {% else %}
+                                     <!--<label class="checkbox fg-lightGray" for="app-checkbox"> -->
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" name="env-controls" id="env-controls" data-value="{{ environments }}">
+                                                <font size="4"> 
+                                                    {{ environments }}
+                                                 </font>
+                                            </td>
+                                        </tr>
+                                     <!-- </label> -->
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </table>
+                </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal" id="close-env-modal">Close</button> 
+            <button type="button" class="btn btn-primary" id="save-env">Save</button>
+          </div>
+      </div>
+    </div>
+</div>  
+
+{% endblock body-content%}
+
+{% endblock content %}

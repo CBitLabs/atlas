@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en-us" >
+<head>
+	<title>Log in | Django site admin</title>
+	<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
+	<link rel="stylesheet" type="text/css" href="/static/admin/css/login.css" />
+	<!--[if lte IE 7]><link rel="stylesheet" type="text/css" href="/static/admin/css/ie.css" /><![endif]-->
+
+	<script type="text/javascript">window.__admin_media_prefix__ = "/static/admin/";</script>
+</head>
+
+
+<body class="login">
+
+  {% if form.non_field_errors %}
+    <ul class='form-errors'>
+        {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}   
+   
+    
+    <!-- Container -->
+	<div id="container">
+		<!-- Header -->
+    	<div id="header">
+        	<div id="branding">
+        		<h1 id="site-name">Atlas Login</h1>
+        	</div>
+        </div>
+    <!-- END Header -->
+    
+    <!-- Content -->
+    
+    
+     <div id="content" class="colM">
+        <div id="content-main">
+        	
+			<form action="/appv1/dashboard/" method="post" id="login-form">
+ 			{% csrf_token %}
+  				<div class="form-row">
+    				 <label for="id_username" class="required">Username:</label>
+    				 <input id="id_username" maxlength="254" name="username" type="text" />
+  				</div>
+  				<div class="form-row">
+    				<label for="id_password" class="required">Password:</label> <input id="id_password" name="password" type="password" />
+    				<input type="hidden" name="this_is_the_login_form" value="1" />
+    				<input type="hidden" name="next" value="/appv1/" />
+  				</div>
+  
+  
+				  <div class="submit-row">
+					<label>&nbsp;</label><input type="submit" value="Log in" />
+				  </div>
+				  
+				  <br class="clear" />
+				  <hr>
+				 
+				 
+				 <span id="signinButton">
+					  <span
+						class="g-signin"
+						data-callback="signinCallback"
+						data-clientid="59357902868-9l5rc012tav8q332sneoig0f94ssu8jp.apps.googleusercontent.com"
+						data-cookiepolicy="single_host_origin"
+						data-requestvisibleactions="http://schemas.google.com/AddActivity"
+						data-scope="profile">
+					  </span>
+				</span>
+				 
+				 
+				 
+				  
+	</form>
+
+	<script type="text/javascript">
+	document.getElementById('id_username').focus()
+	</script>
+</div>
+
+<br class="clear" />
+</div>
+       
+    
+    
+    
+   
+<!-- END Content -->
+
+	<div id="footer"></div>
+	</div>
+<!-- END Container -->
+
+</body>
+</html>

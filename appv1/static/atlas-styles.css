@@ -1,0 +1,583 @@
+.dropdown-color
+{
+  color: white
+}
+
+/*
+configuring colours of status tiles
+*/
+.metro .tile.quadro-full {
+  height: 80px;
+  width: auto;
+  background-color: #E6E6E6;
+  }
+
+.metro .tile.double{
+  height :80px;
+}
+.metro .tile.status{
+  height:90px;
+}
+
+.metro .tile.action{
+  height:80px;
+}
+/* end of tile enfiguration */
+
+/* apply a natural box layout model to all elements */
+*, *:before, *:after {
+  -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+ }
+
+
+.config-big
+{
+  background: red;
+    color: white;
+    padding: 10px;
+    border-radius: 50%
+}
+.panel-group
+{ width: 900px;
+  height: 80px;
+}
+
+  
+.metro .tile-left
+{
+  
+  top: 70px
+}
+
+.metro .panel-header
+{
+   font-family: 'fedra sans'
+   font-size: x-large;
+   color: #E6E6E6;
+}
+
+.metro .fg-lighGray
+{
+  color:#F7F7F7;
+}
+.metro .modal-left
+{
+  left:10px;
+}
+.metro .panel-position
+{
+  width: 800px;
+  padding: 15px;
+} 
+
+.metro .select-block
+{
+   display:inline-block; 
+   vertical-align:top; 
+   overflow:hidden; 
+   border:solid grey 1px; 
+}
+
+.metro .select 
+{ padding:10px;
+ margin:-5px -20px -5px -5px;
+ }
+ 
+.titleclass
+{
+  
+  background-color: #C1B3B3;
+  width:250px; /* or whatever width you want. */
+    max-width:250px; /* or whatever width you want. */
+    display: inline-block;
+
+}
+
+/* styles for data tables for each stack*/
+#table-header{
+      background-color: #66CCFF;
+      color: #9a1616
+}
+
+
+table.dataTables {
+  font-family: 'fedra sans';
+  size: 2;
+  background-color: #E6E6E6;
+}
+table.dataTables thead tr th{
+  color: #00194A;
+  font-family: 'fedra sans';
+  size: 2;
+}
+.dataTables_wrapper .dataTables_info{
+  clear:both;
+}
+
+
+.datatables-info .datatable-footer-hide{
+  display:none;
+}
+
+.input[type=checkbox]
+{
+    display:none;
+}
+
+.left-side{
+  width: 400px;
+  height: 880px;
+  background-color: #C1B3B3;
+}
+
+.vpc-status-table {
+  left: 10px;
+  background-color: #C9C9CC;
+  color: #1A3366;
+  width:inherit;
+}
+
+/* styles for selected and unselected subnets */
+.subnet-select{
+  background-color: #61656A;
+  color: white;
+  border-style: groove;
+  border: 1px;
+}
+
+.subnet-unselect {
+    background-color:transparent;
+    color: black;
+    border: 1px;
+    border-color: white;
+    border-style: inset;   
+}
+
+/* selected and unselected applications */
+.application-select{
+    background-color: #F0F0F0;
+    color: #444444;
+}
+
+.application-unselect{
+  background-color:transparent;
+  color: white;
+  font-color: white;
+}
+
+/* configuration modal styles */
+#configuration-modal, .modal{
+  width: 700px;
+  font-family: 'fedra sans'
+
+}
+
+.ui-datepicker-trigger {
+  width: 35;
+  height: 35;
+ }
+
+.modal .modal-body {
+    height: 500px;
+}
+
+.ui-tabs-hide { 
+    display: none !important; 
+ }
+
+.ui-progressbar {
+    position: relative;
+  }
+
+.progress-label {
+    position: absolute;
+    left: 50%;
+    top: 4px;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #fff;
+  }
+
+.vpc-status-progress{
+    background-color: #66C266;
+    border-radius: 0px;
+    position:relative; 
+    height:15px; 
+    width:300px;
+  }
+
+.ui-progressbar .ui-progress-indeterminate{
+    background-color: #66C266;
+    border-radius:0px;
+  }
+
+.ui-progressbar-value{
+  background-color:#66C266;
+}
+
+.ui-widget-header {
+        background-image: none !important;
+    }
+
+#app-div {
+  color:#FFFFC2;
+  background-color: white;  
+}
+
+
+.stack-status, .stack-action-label {
+  font-size:x-small;
+  color: #002966;
+}
+
+.status-bar-close, .status-bar-minimize{
+  display:none;
+}
+.stack-status-close, .stack-status-minimize
+{
+  display:none;
+}
+
+.uncat-status-close, .uncat-status-miminize
+{
+  display:none !important;
+  height: 40px
+  width: 40px;
+  color:blue;
+}
+
+.minimize_stack{
+  height:30px;
+  width:30px;
+}
+.instack-action-icon,
+.vpc-action-icon, .uncat-action-icon,
+.instance-stack-console, .vpc-console,
+.uncat-console{
+  height:25px;
+  width:25px;
+}
+
+
+.app-table .uncat-table
+{
+  overflow:visible;
+  border:1px; 
+  border-style:inset;
+  background-color: #E6E6E6;
+  display: none !important;
+}
+
+#aggregates-panel {
+  background-color: #E6E6E6;
+  border-collapse:collapse;
+  border-style:solid; 
+  border-color: #E6E6E6;
+  clear: both;
+}
+
+.status-panel
+{
+  clear:both; 
+  table-layout:fixed;
+  display:table;
+}
+
+.status-icon{
+  width:25px;
+  height: 25px;
+}
+
+#env-config-modal{
+
+  width:auto;
+  height:auto; 
+  background-color=DrakGray;
+  border-style:inset; 
+  border:1px
+}
+
+#env-date-picker{
+display:none;
+}
+
+
+#attribute-edit-console{
+  display:none; 
+  color:DarkGray; 
+  border:4px; 
+  border-style:groove;
+}
+
+#attr-ok-button, #attr-edit-button{
+  display:none;
+}
+
+#instance-stack-output{
+  border-style:inset;
+  border-color:#C9C9CC;
+  border:1px;
+}
+
+#output-edit-console
+{
+  display:none; 
+  color:#787880; 
+  border:4px; 
+  border-style=groove;"
+}
+
+#uncat-table
+{
+  border:1px; 
+  border-style:inset;
+}
+
+.info-div{
+  overflow:visible;
+  display:none;
+}
+
+.info-tabs{
+  overflow:visible;
+}
+
+.app-div, .uncat-div{
+  background-color:#D3D3D4;
+  clear:both; 
+  border:1px; 
+  border-style:inset;
+  border-color:#787880;
+  padding:0;
+  color:white;
+}
+
+.table-panel-title{
+  background-color:#ECEDED;
+  border-style:inset;
+  clear:both;
+  width:100%;
+  display: table;
+}
+
+.uncat-table-display{
+  position absolute; 
+  width=100%; 
+  table-layout:fixed; 
+  float:right;
+
+}
+
+.uncat-progress-bar{
+  height:20px;
+  float:right;
+  display:none
+}
+
+.vpc-subnet-app-identifier,
+.uncat-identifier{
+  height:20px;
+  size:4;
+  padding:0, 
+  margin:0;
+  color: #003366;
+  word-wrap: none;
+}
+
+/* action menu positioning for each stack */
+.action-menu{
+  background-color: #C9C9CC; 
+  position: absolute;
+  left: -10em;
+ 
+}
+
+#app-div, #uncat-div {
+  background-color:white; 
+  position:relative; 
+  width:100%;
+  table-layout:fixed
+}
+
+.uncat-info-div{
+  display:none;
+}
+
+.add-tab-icon{
+  width:40px;
+  height:40px;
+}
+
+.add-tabs-menu{
+  background-color: #C9C9CC; 
+  display:block !important; 
+}
+
+/* dropdown toggle for environments -to be implemented*/
+.environment-toggle{
+  width:20px;
+  height:20px;
+  display:none;
+}
+
+/* toolbar table for each vpc */
+.vpc-toolbar{
+  background-color:#787880;
+  border-color:#C9C9CC; 
+  border-style:inset;
+}
+
+
+.mimimize_stack{
+  width:40px;
+  height:40px;
+}
+
+
+/* stack attribute key */
+.stack-attribute{
+  font-size:small;
+  color: #5C0000;
+  font-family: 'fedra sans';
+}
+
+/* attribute values for each stack */
+.stack-attribute-value{
+  font-size: small;
+  color:#006B00;
+  font-family: 'fedra sans';
+}
+/* div for timer attribute*/
+.stack-attribute-timer{
+  display:inline-block;
+  font-size:small;
+  font-family: 'fedra sans';
+  font-color:#194775;
+  font-style:italic;
+  font-weight: bold;
+}
+/* unvisited link */
+a:link {
+    color: #194775;
+}
+
+/* visited link */
+a:visited {
+    color: #FF85C2;
+}
+/* mouse over link */
+a:hover {
+    color:#246BB2;
+}
+/* selected link */
+a:active {
+    color:#006600;
+}
+
+.environment-status{
+  display:table; 
+  background-color:#787880;
+}
+
+.vpc-status-display{
+  clear:both;
+  background-color:#787880;
+  display:none !important;
+  position:relative;
+  border-style:groove;
+  border-color:LightGray;
+  table-layout:fixed
+}
+
+.vpc-status-table{
+  border-style:groove;
+  background-color:LightGray;
+  border-color:DarkGray;
+  clear:both;
+  width=auto;
+  flex:1 auto;
+  position:relative;
+}
+
+#datatable_filter{
+  height:30px;
+  width:250px;
+  border:1px solid;
+  position:relative; 
+  right:0;
+  background: white url('/static/icons/search.ico') left no-repeat;
+  padding-left: 25px;
+}
+
+.apptable_name_display{
+    background-color:#CECED0;
+    text-align:left; 
+    vertical-align:text-top;
+    white-space:nowrap;
+    display:table-cell;
+    width: 200px;
+}
+
+.tooltip-inner{
+  background-color: #FFFFF3;
+  font-family: fedra-sans;
+  color: #003366;
+}
+
+.table-attributes-div{
+    background-color:#C1C1B9;
+    text-align:left; 
+    vertical-align:text-top;
+    white-space:nowrap;
+    display:table-cell;
+}
+
+.stack-toolbar-table{
+  display:table;
+  float:right;
+  background-color:#D3D3D4;
+  border:1px;
+  border-style:groove;
+  width:auto;
+}
+
+.minimize-stack{
+  height:25px;
+  width:30px;
+}
+
+.maximize-stack{
+  height:25px;
+  width:30px;
+  display: none;
+}
+
+.maximize-all-stack{
+  height:25px;
+  width:30px;
+}
+
+.minimize-all-stack{
+  width:30px;
+  height:30px;
+}
+
+.minimize-stack{
+  height:25px;
+  width:30px;
+}
+
+.maximize-stack{
+  width:30px;
+  height:30px;
+}
+
+#filter-app-label{
+   font-family:fedra-sans;
+   font-size: large;
+   color: #002952;
+   font-style: bold;
+}
+
+#app-icon{
+  color: #002952;
+}

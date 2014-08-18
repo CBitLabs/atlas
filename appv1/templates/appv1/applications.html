@@ -1,0 +1,1055 @@
+{% extends "appv1/base.html" %}
+{% load atlas_tags %}
+{% load staticfiles %}
+
+
+{% block title %}
+<div class="titleclass">
+	
+</div>
+{% endblock title%}
+
+{% block body-id %}
+<body id="applications">
+{% endblock body-id %}
+
+{% block body-content %}
+<!-- contentent for body of the environment specific page -->
+
+<!-- panel to display status -->
+<div class="panel panel-default metro">
+	<div class="panel-header bg-Gray">
+		<span class="icon-globe" id="env-icon" data-toggle="tooltip"
+									 			title="Click to view a different environment"
+									 			data-trigger="hover focus"
+                                     			data-placement="auto"
+                                     			data-template = '<div class="tooltip" role="tooltip">
+			                        			<div class="tooltip-inner"></div>
+			                         			<div class="tooltip-arrow"></div></div>'> </span>
+			{{ environment | capfirst}} 
+			<font size="4">
+					<span><a class="icon-cog" id="env-status-configure"
+					                      data-toggle="tooltip"
+									 	  title="Click to configure status"
+									      data-trigger="hover focus"
+                                          data-placement="auto"
+                                          data-template = '<div class="tooltip" role="tooltip">
+			                              <div class="tooltip-inner"></div>
+			                              <div class="tooltip-arrow"></div></div>'></a></span>
+			</font>
+	</div>
+
+	<!-- aggregates panel -->
+	<div class="panel panel-default" id="aggregates-panel">
+		<div class="panel-body" >
+			<div id="aggregates-div" 
+			     style="clear:both;"
+			     data-toggle="tooltip"
+	 			title="Aggregated status for all vpcs."
+	 			data-trigger="hover focus"
+     			data-placement="auto"
+     			data-template = '<div class="tooltip" role="tooltip">
+    			<div class="tooltip-inner"></div>
+     			<div class="tooltip-arrow"></div></div>'>
+				<!-- display of aggregate values -->
+					<font size="4"> Overall: </font>
+
+					{% for aggregate, value in aggregate_info_zip %}
+						<font color="blue" <b> {{aggregate}} : </b> </font>&nbsp;{{value}}&nbsp;&nbsp 
+					{%endfor %}
+						
+			</div>
+		</div>
+	</div>
+	<!-- end of aggregates panel -->
+
+	<!--status display -->
+	<div id="status-panel" class="panel-body">
+			<!-- environment status -->
+	 	{% for vpc, status in status_values_dict.items %}
+			<div class="environment-status" 
+			     id="environment-status-{{vpc}}"> 
+				{% if status%}
+				<!-- tool bar display -->
+					<table class="vpc-toolbar"
+					       cellpadding="2px"
+					        style="background-color:#787880;
+  							border-color:#C9C9CC; 
+  							border-style:inset;">
+						<tr>
+							<td>	 	
+								<div class="dropdown" 
+								     style="overflow:visible;clear:both;"
+								     data-toggle="tooltip"
+									 title="Click to perform vpc actions"
+									 data-trigger="hover focus"
+                                     data-placement="auto"
+                                     data-template = '<div class="tooltip" role="tooltip">
+			                         <div class="tooltip-inner"></div>
+			                         <div class="tooltip-arrow"></div></div>'>
+							 		<img class="dropdown-toggle vpc-action-icon" 
+							 		     for="{{vpc}}" src="/static/icons/action.ico" 
+							 		     target="vpc-action-menu"> </img>
+							 		<img class="vpc-action-output" 
+							 		     id="vpc-action-output-{{vpc}}" 
+							 		     for="{{vpc}}"
+							 		     src="/static/icons/console_output.ico"
+							 		     data-toggle="tooltip"
+									     title="Click to display action results"
+									     data-trigger="hover focus"
+                                         data-placement="auto"
+                                         data-template = '<div class="tooltip" role="tooltip">
+			                             <div class="tooltip-inner"></div>
+			                             <div class="tooltip-arrow"></div></div>'/>
+							 		
+									<ul class="dropdown-menu vpc-action-menu" 
+									    id="vpc-action-menu-{{vpc}}" 
+									    for="{{vpc}}" role="menu" 
+									    data-toggle="dropdown">
+										{% for actions in vpc_actions %}
+											<li data-toggle="modal" 
+											    data-target=".vpc-actions-modal"> {{actions}}</li>
+												<li class="divider"></li>
+										{% endfor %}
+									</ul> 
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="tile quadro-full">	
+									<div class="tile double status" 
+									     vpc-name="{{vpc}}" 
+									     data-name=""
+									     data-toggle="tooltip"
+										 title="Environment"
+ 	       								 data-trigger="hover focus"
+ 	       								 data-placement="auto"
+ 	       								 data-template = '<div class="tooltip" role="tooltip">
+ 	       												<div class="tooltip-inner"></div>
+ 	       												<div class="tooltip-arrow"></div></div>'>
+										 <h2 align="center"> 
+										     {{environment}}  
+										 </h2>  
+										  <span class="label fg-blue">{{vpc}}</span>
+									</div>
+									{% for index1, index2, index3, index4 in status%}
+										<div class="tile status" 
+										     vpc-name = "{{vpc}}" 
+										     data-name="{{index1}}"
+										     data-toggle="tooltip"
+											 title="{{index1}}"
+	 	       								 data-trigger="hover focus"
+	 	       								 data-placement="auto"
+	 	       								 data-template = '<div class="tooltip" role="tooltip">
+	 	       												<div class="tooltip-inner"></div>
+	 	       												<div class="tooltip-arrow"></div></div>'> 
+											<center> <h2> {{ index4}}  </h2>  </center>
+											{% ifequal index3 "right" %}
+                                    			<span><img class="status-icon" src="{{index2}}"> </img></span>
+                           					{% endifequal %}
+                             				{% ifequal index3 "center" %}
+                                    			<span><img class="status-icon" src="{{index2}}"> </img></span>
+                            				{% endifequal %}
+				                            {% ifequal index2 "none" %}   
+				                                <span class="label fg-blue"> {{index1}} </img></span>
+				                            {% endifequal %}
+										</div>
+									{% endfor %}
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<!-- vpc status display -->
+							<div class="vpc-status-display" 
+									id="vpc-status-display-{{vpc}}" 
+									for="{{vpc}}">
+								<table cellpadding=0; 
+								       style="float:right;background-color:#787880;border:1px; border-color:LightGray;border-style:groove">
+									<tr> 
+										<td>
+											<i class="ui-icon ui-icon-close status-bar-close" 
+											   id="status-bar-close-{{vpc}}" 
+											   for="{{vpc}}"
+											   style="display:none">></i>
+											<i class="ui-icon ui-icon-minus status-bar-minimize" 
+											   for="{{vpc}}" 
+											   id="status-bar-minimize-{{vpc}}"
+											   style="display:none"></i> 
+										</td>	
+									</tr>
+								</table>
+						
+								<table class="vpc-status-table" 
+								       id="vpc-status-table-{{vpc}}" 
+									   for="{{vpc}}"
+									   style= "display:none">
+									<tr> 
+										<td align="center" style="border:1px; border-style:inset;background-color:LightGray"> 
+											<label style="font-size:small" class="vpc-action-label" id="vpc-action-label-{{vpc}}" for="{{vpc}}">
+												
+											</label>
+										</td>
+									
+									    <td align = "center" style="border:1px; border-style:inset;background-color:LightGray">
+									  		<div class="vpc-status-progress" 
+									    		 id="vpc-status-progress-{{vpc}}">
+									     	 	
+									     	</div>
+									    </td>
+									    <td align="center" style="border:1px; border-style:inset;background-color:LightGray">
+									   		 <label style="font-size:small; vertical-align:top" class="vpc-status-label" id="vpc-status-{{vpc}}"></label>
+									   	</td>
+									</tr>
+								</table>
+							</div>	<!-- end of vpc-status-display-->
+						</tr>
+					</table>
+				{% endif %}	
+			
+			
+				<div class="modal_window" 
+				     id="vpc-console-output-{{vpc}}" 
+				     for="{{vpc}}" 
+				     title="Console output" 
+				     style="display:none">
+
+				</div>
+				
+			</div>	<!--end of environment status --> 
+		{% endfor %}	
+	</div>
+	<!-- end of status display -->	
+</div>
+
+
+<!--menu for navigating between environments -->	
+</div>
+<div id="environment_menu">
+	<nav id="navigation-menu">
+		<ul>
+			<li><a href="{{home_url}}/dashboard">Dashboard</a></li>
+			<li class="Spacer"> </li>
+			<script var dash_url="dashboard" ></script>
+			<li class="Label"><a href="/dashboard/">Environments</a></li>
+			{% for env in dash_environments %}
+				<li><a href="../{{env}}/">{{ env | capfirst }}</a></li>
+   			{% endfor %}		
+		</ul>	
+	</nav>
+</div>
+
+<div id="sliding_app_menu">   
+	<nav id="applications-menu">      
+		<ul class="List">
+			<font size="4"> <li> Applications </li> </font>
+			<div class="control-groups">
+
+				{% if not selected_apps %}
+					{% for application in applications %}
+						<li class="Spacer">
+							<div class="button-set">
+    							<td> <button class="active app-buttons application-select" 
+    							             style="width:250px;">{{application}}</button>
+    						    </td>
+    						</div>
+						</li>
+					{% endfor %}
+				{% else %}
+				<!-- if no apps are selected then display all apps -->
+					{% for application in applications %}
+						<li class="Spacer">
+							{% if application in selected_apps %}
+							<div class="button-set">
+    							<td> 
+    							    <button class="active app-buttons application-select" 
+    							             style="width:250px;">
+    							        {{application}}
+    							    </button> 
+    							</td>
+    						</div>
+							
+							{% else %}
+							<div class="button-set">
+    							<td> <button class="app-buttons application-unselect"  
+    							             style="width:250px;">
+    							        {{application}}
+    							   </button> 
+    							</td>
+    						</div>
+							{% endif %}
+						</li>
+					{% endfor %}
+				{% endif %}
+			</div>
+		</ul>
+	</nav>
+</div>
+
+
+<div class="panel panel-default">
+	<div class="panel-title" style="auto; width:100%;display:inline-block; background-color:LightGray; padding:0px; margin:0px">
+		<div class="x-toolbar" style="right:0">
+		<table style="width:100%;right:0">
+			<tr>
+				<td width=50%>
+					<div class="app-filter" data-toggle="tooltip"
+											title="Click to filter on application"
+	 	       								data-trigger="hover focus"
+	 	       								data-placement="auto"
+	 	       								data-template = '<div class="tooltip" role="tooltip">
+	 	       												<div class="tooltip-inner"></div>
+	 	       												<div class="tooltip-arrow"></div></div>'>
+						<span id="app-icon" class="glyphicon glyphicon-th-list"></span>	
+						<label style="margin:0;padding:0;" id="filter-app-label"> Filter:Applications </label>
+					</div>
+			 	</td>
+			 	<td width=50%>
+			 		<div class="pull-right stack-minmax" 
+			 		     data-toggle="tooltip"
+						 title="Minimize/Maximize all stacks"
+						 data-trigger="hover focus"
+                         data-placement="auto"
+                         data-template = '<div class="tooltip" role="tooltip">
+                         <div class="tooltip-inner"></div>
+                         <div class="tooltip-arrow"></div></div>'>
+				 		<img class="minimize-all-stack" 
+						    src="/static/icons/minimize-stack.gif"> </img>
+					</div>
+					<div class="pull-right">
+						<label> Search : </label >
+				 		<input type="text" id="datatable_filter"/>
+	
+				 	</div>
+			 	</td>
+			 </tr>
+		
+			<tr>
+				<div class="subnet-panel" style="margin:0px;padding:0px">
+					<table class="pull-right" 
+					       style="right:0;">
+						<tr style="display:flex;flex-flow:row wrap;justtify-content:flex-end;"> 
+						
+						{% if not selected_subnets %}
+							{% for subnets in env_subnets_list %}
+								<td>
+									<div class="button-set">
+					    				<button class="active subnet-buttons subnet-select"
+					    				                data-toggle="tooltip"
+											 			title="Click to filter tables based on subnets"
+	 	       								 			data-trigger="hover focus"
+	 	       								 			data-placement="auto"
+	 	       								 			data-template = '<div class="tooltip" role="tooltip">
+	 	       												<div class="tooltip-inner"></div>
+	 	       												<div class="tooltip-arrow"></div></div>'>{{subnets}}</button> 
+					    			</div>
+					    		</td>
+							{% endfor %}
+							
+						{%else %}
+						<!-- display selected subnets -->
+
+							{% for subnets in env_subnets_list%}
+								{% if subnets in selected_subnets %}
+									<td style:"flex-grow:1 auto">
+										<div class="button-set">
+					    				  	<button class=" active subnet-buttons subnet-select"
+					    				  			data-toggle="tooltip"
+											 		title="Click to filter tables based on subnets"
+	 	       								 		data-trigger="hover focus"
+	 	       								 		data-placement="auto"
+	 	       								 		data-template = '<div class="tooltip" role="tooltip">
+	 	       										<div class="tooltip-inner"></div>
+	 	       										<div class="tooltip-arrow"></div></div>'>{{subnets}}</button>
+					    				</div>
+					    			</td>
+				    			    
+								{%else %}
+									<td style:"flex-grow:1 auto">
+										<div class="button-set">
+					    					<button class="subnet-buttons subnet-unselect"
+					    					        data-toggle="tooltip"
+											 		title="Click to filter tables based on subnets"
+	 	       								 		data-trigger="hover focus"
+	 	       								 		data-placement="auto"
+	 	       								 		data-template = '<div class="tooltip" role="tooltip">
+	 	       										<div class="tooltip-inner"></div>
+	 	       										<div class="tooltip-arrow"></div></div>'>{{subnets}}</button>
+					    				</div>
+					    			</td>				
+								{% endif %}
+							{% endfor %}
+						{% endif %}
+						</tr>
+					</table>
+				</div>
+			</tr>
+
+		</table>
+
+	</div>	
+	
+	<!-- if no subnets are selected, select all subnets --> 
+
+
+<div class="panel-content">	
+	
+			
+<!--tables to display application wise data -->
+<div class="#app-div" style="margin-top:5px">
+	{% for region, vpc_list in user_region_vpc_dict.items %}
+
+		<div class="panel panel-default subnet-div" id="{{region}}-div">
+			{% for vpc in vpc_list %}
+				{%if vpc in vpc_attributes %}
+					{% for vpc_attr, vpc_attr_values in vpc_attributes.items %}
+						{% ifequal vpc_attr vpc %}
+							<div class="panel panel-default vpc-div" 
+									id="{{region}}-{{vpc}}-div" 
+									style="margin:0">
+								
+								{% if 'subnets' in vpc_attr_values %}
+									{% for attr, attr_values in vpc_attr_values.items %}
+ 										{% ifequal attr 'subnets' %}
+ 											{% for subnet in attr_values %}
+ 												<div class="panel panel-default subnet-div" 
+ 														id="{{region}}-{{vpc}}-{{subnet}}-div" style="margin:0">
+													{% for application in applications %}
+														{% if application in not_present_subnet|get_value:subnet%}
+														
+																			
+														<div class="panel panel-default app-div" 
+																id ="{{region}}-{{vpc}}-{{subnet}}-{{application}}-div">
+														<div id="table-toolbar">
+															
+															<table id="stack-toolbar-table">
+																	
+
+																<tr> 
+																    <td align=center style="float:right;width:15%">
+																		<label class="stack-action-label" style="font-size:xx-small" 
+									  													id="{{region}}-{{vpc}}-{{subnet}}-{{application|add:'-stack-action-label'}}"
+									  													for-app-subnet="{{region}}-{{vpc}}-{{subnet}}-{{application}}">
+									  									</label>
+									  								</td>
+																	<td style="float:right;width:30%">
+																		<div class="stack-progress-bar" 
+																		     id="{{region}}-{{vpc}}-{{subnet}}-{{application|add:'-progress-bar'}}" 
+								  											for-app-subnet= "{{region}}-{{vpc}}-{{subnet}}-{{application}}";style="height:40px;float:right;display:none"> 
+								  										</div>
+															
+																	 </td>
+																		<td align=center  style="float:right;width:15%">	
+																
+									  									 <label class="stack-status" style="font-size:xx-small" 
+									  													id="{{region}}-{{vpc}}-{{subnet}}-{{application|add:'-stack-status'}}"
+									  													for-app-subnet="{{region}}-{{vpc}}-{{subnet}}-{{application}}">
+									  											</label>
+											  												
+									  									</td>
+
+									  									<td style="float:right;width:0.5%">
+													  						<i style="display:none" 
+													  							class="ui-icon ui-icon-squaresmall-minus pull-right stack-status-minimize" 
+													  							id="{{region}}-{{vpc}}-{{subnet}}-{{application|add:'-status-minimize'}}" 
+													  							for-app-subnet="{{region}}-{{vpc}}-{{subnet}}-{{application}}">
+													  						</i>
+																		</td>
+									  									<td style="float:right;width:0.5%">
+													  						<i class="ui-icon ui-icon-squaresmall-close pull-right stack-status-close" 
+													  							id="{{region}}-{{vpc}}-{{subnet}}-{{application|add:'-status-close'}}" 
+													  							for-app-subnet="{{region}}-{{vpc}}-{{subnet}}-{{application}}"
+													  							style="display:none">
+													  						</i>
+																		</td>
+																		<td style="float:right;width:1%">
+																		    <div class="dropdown" data-toggle="tooltip"
+																						 		  title="Click to perform actions"
+		 	       																		          data-trigger="hover focus"
+		 	       								                                                  data-placement="auto"
+		 	       								                                                   data-template = '<div class="tooltip" role="tooltip">
+		 	       												                                   <div class="tooltip-inner"></div>
+		 	       												                                   <div class="tooltip-arrow"></div></div>'>
+																				<img class="dropdown-toggle pull-right instack-action-icon" 
+																						for-app-subnet="{{region}}-{{vpc}}-{{subnet}}-{{application}}" 
+																						src="/static/icons/action.ico"/>
+																				
+																				<ul class="dropdown-menu dropdown-menu-right action-menu"  
+																				    id="{{region}}-{{vpc}}-{{subnet}}-{{application}}-action-menu" 
+																				    role="menu" 
+																				    for-app-subnet="{{region}}:{{vpc}}:{{subnet}}:{{application}}" 
+																				    data-toggle="dropdown">
+																					
+											  									</ul> 
+											  								</div>
+								  										</td>
+								  										<td style="float:right;width:1.2%">
+								  											<img class="pull-right instance-stack-console" 
+								  											     id="{{region}}-{{vpc}}-{{subnet}}-{{application|add:'-console'}}" 
+								  											     for="{{region}}-{{vpc}}-{{subnet}}-{{application}}"
+								  											     src="/static/icons/console_output.ico"
+								  											     data-toggle="tooltip"
+																				 title="Click to display console output"
+ 	       																		 data-trigger="hover focus"
+ 	       								                                         data-placement="auto"
+ 	       								                                         data-template = '<div class="tooltip" role="tooltip">
+ 	       												                         <div class="tooltip-inner"></div>
+ 	       												                         <div class="tooltip-arrow"></div></div>'> </img>
+								  										</td>
+								  										<td style="float:right;width:1.2%">
+								  											<div class="minmax-stack-icon"
+								  											     id="{{region}}-{{vpc}}-{{subnet}}-{{application|add:'-minmax-div'}}"
+								  											     data-toggle="tooltip"
+																				 title="Maximize/Minimize stack"
+ 	       																		 data-trigger="hover focus"
+ 	       								                                         data-placement="auto"
+ 	       								                                         data-template = '<div class="tooltip" role="tooltip">
+ 	       												                         <div class="tooltip-inner"></div>
+ 	       												                         <div class="tooltip-arrow"></div></div>'>
+									  											<img class="minimize-stack" 
+									  											     id="{{region}}-{{vpc}}-{{subnet}}-{{application|add:'-minimize-stack'}}" 
+									  											     for-app-subnet="{{region}}-{{vpc}}-{{subnet}}-{{application}}"
+									  											     src="/static/icons/minimize-stack.gif"
+									  											     />
+									  									    </div>
+								  										</td>
+							  										</tr>
+							  								</table>
+							  							
+														</div>
+														<div class="instance-stack-console-info modal_window" 
+									  							     id="stack-console-output-{{region}}-{{vpc}}-{{subnet}}-{{application}}" 
+									  							     for="{{region}}-{{vpc}}-{{subnet}}-{{application}}" 
+									  							     title="Console output" 
+									  							     style="display:none">
+
+																</div>		
+						  								
+<div class="panel-title table-panel-title">
+	<div class="apptable_name_display">
+	 	<label class="vpc-subnet-app-identifier" 
+	 	       for="{{region}}-{{vpc}}-{{subnet}}-{{application}}" 
+	 	       data-toggle="tooltip" 
+	 	       title="{{region}}:{{vpc}}"
+	 	       data-trigger="hover focus"
+	 	       data-placement="auto"
+	 	       data-template = '<div class="tooltip" role="tooltip">
+	 	       					<div class="tooltip-inner"></div>
+	 	       					<div class="tooltip-arrow"></div></div>'>
+	 	            &nbsp;{{subnet}}:{{ application }}
+	 	</label> 
+	</div>
+	<div class="table_attributes_div">
+		<table cellspacing="30px">
+			<tr style="display:flex; flex-wrap:wrap;align-content:stretch"> 										
+
+<!-- display of attributes -->	
+{% for attr_region, attr_region_value in attribute_values_dict.items %}
+	{% ifequal region attr_region %}
+		{%for attr_vpc, attr_vpc_value in attr_region_value.items%}
+			{%ifequal vpc attr_vpc %}
+				{%for attr_subnet, attr_subnet_value in attr_vpc_value.items%}
+					{% ifequal subnet attr_subnet %}
+						{%for attr_stack, attr_stack_value in attr_subnet_value.items%}
+							{% ifequal attr_stack application %}
+								{% for stack_attr in stack_attributes_list %}
+									{% for attrib, attr_value in attr_stack_value.items%}
+
+										{% ifequal stack_attr.0 attrib %}
+
+											<td style="border:1px;border-style:none groove groove; 
+															vertical-align:text-top; flex:1 auto;">
+											    <div>
+													<label class="stack-attribute" 
+															for-app-subnet="{{region}}:{{vpc}}:{{subnet}}:{{application}}"
+															data-toggle="tooltip"
+															 title="Click to edit attribute value"
+															 data-trigger="hover focus"
+									                         data-placement="auto"
+									                         data-template = '<div class="tooltip" role="tooltip">
+									                         <div class="tooltip-inner"></div>
+									                         <div class="tooltip-arrow"></div></div>'> 
+																{{stack_attr.0}}
+													</label>
+                                                    <input type=hidden 
+                                                           class="stack-attribute-editable" 
+                                                           for-app-subnet="{{region}}:{{vpc}}:{{subnet}}:{{application}}" 
+                                                           value="{{stack_attr.1}}"/>
+                                       
+													<label> &nbsp;:&nbsp; </label>
+													<label class="stack-attribute-value" 
+															for-app-subnet="{{region}}:{{vpc}}:{{subnet}}:{{application}}" 
+															for-attr="{{attrib}}"
+															style="word-break: break-all;
+															flex:flex:grow">	
+														{{attr_value}}
+													</label>
+													{% ifequal stack_attr.0 "owner" %}
+														<div class="stack-attribute-timer" for-attr="start_time" 
+																for-app-subnet="{{region}}:{{vpc}}:{{subnet}}:{{application}}"
+																id="{{region}}:{{vpc}}:{{subnet}}:{{application}}-attribute-timer"
+																style="display:inline-block;"> 	
+														</div>
+													{% endifequal %}
+												</div>
+											</td>
+										{% endifequal %}					
+									{% endfor %}
+								{% endfor %}
+							{% endifequal %}
+						{% endfor %}
+					{% endifequal %}			
+				{% endfor %}
+			{% endifequal %}
+		{% endfor %}
+	{% endifequal %}
+{% endfor %}
+						
+		</tr>
+	</table>
+	</div>
+</div> <!-- end of attributes div -->
+
+<div class="panel-content">
+	<table class="dataTables display app-table" 
+			id='{{region}}-{{vpc}}-{{subnet}}-{{application|add:"-table"}}' 
+			for-app-subnet="{{region}}:{{vpc}}:{{subnet}}:{{application}}">
+	<thead> 
+		<tr>
+			<th> 
+			<input type='checkbox' 
+					class='header-checkbox' id="header-checkbox" 
+					for-app-subnet="{{region}}-{{vpc}}-{{application}}-{{subnet}}"/>
+				{% for column_header in table_columns %}
+					<th>
+						<font face='fedra sans' size='2.5'> 
+							{{column_header}} 
+						</font>
+					</th>
+				{% endfor %}
+		</tr>
+	</thead>
+	<tbody>
+
+
+			{% for inst_vpc, inst_vpc_attrs in column_data_dict.items %}
+				{% ifequal vpc inst_vpc %}
+					{% for inst_subnet, inst_subnet_attrs in inst_vpc_attrs.items %}	 
+						{% ifequal 'subnets' inst_subnet %}	
+							{% for column_subnet, subnet_details_dict in inst_subnet_attrs.items %}
+								{% ifequal column_subnet  subnet %}
+									{% for instance_key, instance_details_dict in subnet_details_dict.items %}
+										{% ifequal "instance_attributes" instance_key %}
+											{% for instance, inst_dict in instance_details_dict.items %}
+												{% ifequal application inst_dict.application %}	
+													<tr>
+														<td> <input type="checkbox" 
+																	class="application-checkbox" 
+																	for-app-subnet="{{region}}-{{vpc}}-{{subnet}}-{{application}}" 
+																	id="{{instance}}-checkbox" /> </td>
+														{% for inst_header in table_columns %}
+															{% for inst_attr, inst_value in inst_dict.items %}
+															
+																{% ifequal inst_header inst_attr %}
+																	<td> {{inst_value}}  </td>
+																{% endifequal %}
+															{% endfor %}
+														{% endfor %}
+													</tr>
+												{% endifequal %}
+													{% endfor %}
+												
+												{% endifequal %}																	
+									{% endfor %}
+								{% endifequal %}
+							{% endfor %}	
+						{% endifequal %}
+					{% endfor %}
+				{% endifequal %}
+			{% endfor %}
+		</tbody>
+	<tfoot>
+	</tfoot>	
+</table>
+
+
+<!-- Panel to display information about instances -->
+<div class="panel panel-default info-div" 
+	id="{{region}}-{{vpc}}-{{subnet}}-{{application}}-information-div">
+	<div>
+		Instance Details
+		<table style="float:right">
+			<tbody>
+			<tr>
+				<td>
+					<span class="ui-icon ui-icon-close infodiv-close" id="info-div-close"></span>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+		
+	</div>
+													
+	<div class="panel-content">
+		<div class="info-tabs" 
+			id="{{region}}-{{vpc}}-{{subnet}}-{{application}}-info-tabs">
+			<ul>
+				{% for tab_index in tabs_list %}
+					{% for tab_heading in tab_index %}
+						<li>
+							<a class="tabs-anchor" for-tab="{{tab_heading}}" 
+								for-app-subnet="{{region}}-{{vpc}}-{{subnet}}-{{application}}" 
+								href="#{{region}}-{{vpc}}-{{subnet}}-{{application}}-{{tab_heading}}-div">
+								{{tab_heading|upper}} 
+							</a> 
+						</li>
+						
+					{% endfor %}
+				{% endfor %}
+			</ul>
+			
+			{% for tab_index in tabs_list %}
+				{% for tab_heading in tab_index %}
+					<div id="{{region}}-{{vpc}}-{{subnet}}-{{application}}-{{tab_heading}}-div" 
+							for-tab="{{tab_heading}}" 
+							for-app-subnet="{{region}}-{{vpc}}-{{subnet}}-{{application}}">
+
+						<!--javascript will add contents dynamically -->
+					</div> 
+				{% endfor %}	
+			{% endfor %}
+		</div>
+
+	</div>
+</div>
+<!-- end of panel info display -->						
+			
+															</div>
+
+														</div>
+														{% endif %}
+													{% endfor %} <!--end of applications for-loop -->
+												</div>
+ 											{%endfor %} <!-- end of subnets for loop -->
+ 										{% endifequal %}
+ 									{% endfor %}
+								{% endif %}
+							</div>
+						{% endifequal %}	
+					{% endfor %} 
+					
+				{% endif %}
+			{% endfor %} <!-- end of vpc for loop -->
+		</div>
+	{% endfor %} <!-- end of region for loop -->
+</div> <!-- end of table wise application instance data -->
+</div>
+		<!--- display of uncategorized instances -->
+
+<div id="uncat-div">
+
+	{% if environment == "uncategorized" %}
+		{% for region, region_attr in column_data_dict.items %}
+			<div class="panel panel-default uncat-div" 
+				id ="{{region}}-uncat-div"
+				for-region= "{{region}}">
+				<div class=".action-parameters" 
+					id="action-parameters-div-uncategorized">
+				</div>
+									  									
+				<div class=".uncat-table-display">
+												
+					<table style="display:table;float:right;">
+
+						<tr> 
+							<td>
+								<div class="uncat-progress-bar" 
+									id="{{region}}-uncat-progress-bar" 
+										for-region= "{{region}}">
+								</div>
+											
+							</td>
+							<td style="width:20%">	
+									 <label class="uncat-status"  
+											id="{{region}}-uncat-stack-status"
+											for-region="{{region}}">
+									</label>		
+								</td>
+								<td style="float:right;width:2%">
+		  						<i style="display:none" 
+		  							class="ui-icon ui-icon-minus pull-right uncat-status-minimize" 
+		  							id="{{region}}-uncat-status-minimize" 
+		  							for-region="{{region}}">
+		  						</i>
+							</td style="float:right;width:2%">
+								<td style="float:right;width:2%">
+		  						<i class="ui-icon ui-icon-close pull-right uncat-status-close" 
+		  							id="{{region}}-uncat-status-close" 
+		  							for-region="{{region}}"
+		  							style="display:none"></i>
+							</td>
+							
+							<td style="float:right;width:2%">
+							    <div class="dropdown">
+									<img class="dropdown-toggle pull-right uncat-action-icon" 
+											for-region="{{region}}" 
+											src="/static/icons/action.ico"> 
+									</img>
+									
+									<ul class="dropdown-menu action-menu" 
+										id="{{region}}-uncat-action-menu" role="menu" 
+										for-region="{{region}}" 
+										data-toggle="dropdown">
+										
+  									</ul> 
+  								</div>
+								</td>
+								<td style="float:right;width:2%">
+									<img class="pull-right instance-stack-console" 
+											for = "{{region}}"
+											id="{{region}}-console" 
+											src="/static/icons/console_output.ico"> </img>
+								</td>
+				  		</tr>
+				  	</table>
+				</div>
+				<div class="panel-title table-panel-title">
+					<table cellspacing="30px" style="text-align:center">
+						<tr> 
+							<td style="background-color:LightGray;align:center"> 
+		 						<label class="vpc-subnet-app-identifier" 
+		 							for="{{region}}" 
+		 								style="height:20px;size:4;padding:0, margin:0"> &nbsp;{{region}}:uncategorized &nbsp;&nbsp;&nbsp;
+		 						</label> 
+							</td>
+						</tr>
+					</table>										
+				</div>
+			    <div class="panel-content">
+					<table class="dataTable display uncat-table" 
+							id="{{region}}-uncat-table"
+							for-region="{{region}}-uncat">
+						<thead> 
+							<th> 
+								<input type='checkbox' 
+										class='header-checkbox' 
+										id="header-checkbox" 
+										for-app-subnet="{{region}}-none-none-uncat"/>
+									{% for column_header in table_columns %}
+										<th>
+											<font face='fedra sans' size='2.5'> 
+												{{column_header}} 
+											</font>
+										</th>
+									{% endfor %}
+						</thead>
+						
+						<tbody>
+							{% for subnet_key, subnet_attributes in region_attr.items %}
+								{% ifequal subnet_key "subnets" %}
+									{% for key, instance_details in subnet_attributes.items %}
+										{% ifequal key "none" %}
+											{% for inst_key, instance_attributes in instance_details.items %} 
+												{% ifequal "instance_attributes" inst_key %}
+													{% for instance, instance_attr_dict in instance_attributes.items %}
+														<tr>
+															<td> 
+																<input type="checkbox" 
+																		class="uncat-checkbox" 
+																		for-app-subnet="{{region}}-none-none-uncat" id="{{instance}}-checkbox"/> 
+															</td>
+															{% for inst_header in table_columns %}	
+																{% for inst_attr, inst_value in instance_attr_dict.items %}
+																	{% ifequal inst_header inst_attr %}
+																		<td> 
+															 				{{inst_value}}  
+															 			</td>
+																	{% endifequal %}
+																{% endfor %}
+															{% endfor %}
+														</tr> 
+													{% endfor %}
+												{% endifequal %}
+											{% endfor %}
+										{% endifequal %}
+									{%endfor %}	
+								{% endifequal %}
+							{%endfor %}
+						</tbody>
+					</table>	
+				</div>		
+
+				<!-- Panel to display information about instances -->
+				<div class="panel panel-default uncat-info-div" 
+					id="{{region}}-uncat-information-div">
+					<div>
+						Instance Details
+						<table style="float:right">
+							<tbody>
+							<tr>
+								<td>
+									<span class="ui-icon ui-icon-close uncat-infodiv-close" id="uncat-info-div-close"></span>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+						
+					</div>														
+					<div class="panel-content">
+						<div class="info-tabs" 
+							id="{{region}}-uncat-info-tabs">
+							<ul>
+								{% for tab_index in tabs_list %}
+									{% for tab_heading in tab_index %}
+										<li>
+											<a class="uncat-tabs-anchor" for-tab="{{tab_heading}}" 
+												for-region="{{region}}" 
+												href="#{{region}}-uncat-{{tab_heading}}-div">
+												{{tab_heading|upper}} 
+											</a> 
+										</li>
+										
+									{% endfor %}
+								{% endfor %}
+							</ul>
+							<!--
+							<span class="ui-icon ui-icon-close pull-right uncat-tab-div-close" 
+									for-tab="{{tab_heading}}" 
+									for-region="{{region}}">
+							</span> -->
+							{% for tab_index in tabs_list %}
+								{% for tab_heading in tab_index %}
+									<div class="tab-details-div" 
+											id="{{region}}-uncat-{{tab_heading}}-div" 
+											for-tab="{{tab_heading}}" 
+											for-region="{{region}}">
+										
+									</div> 
+								{% endfor %}	
+							{% endfor %}
+						</div>
+
+					</div>
+				</div> 
+					
+			</div>
+			<div class="instance-stack-console-info modal_window" 
+			     id="stack-console-output-{{region}}" 
+			     for="{{region}}" 
+			     title="Console output" 
+			     style="display:none">
+
+			</div>	
+		{% endfor %}
+	{% endif %}	
+</div>
+	
+
+
+<div id="instance-stack-output" title="Console output"> 
+	
+
+</div>
+
+		
+<div id='stack_attributes_edit'>
+
+</div>
+<div class="modal fade bs-example-modal-sm" 
+		id = "output-edit-console" 
+		tabindex="-1" role="dialog" 
+		aria-labelledby="myLargeModalLabel" 
+		aria-hidden="true" 
+		style="display:none; color:DarkGray; border:4px; border-style=groove;">
+  <div class="modal-dialog modal-sm">
+  
+    <div class="modal-content">
+     	<div class="modal-header">
+     		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h5 class="modal-title" id="myModalLabel">Add/Edit Tags</h5>
+		</div>
+  		
+		<div class="modal-body tag-list">
+		</div>
+
+  		<div class="modal-footer">
+    		<button class=btn btn-info id="tag-create-button" style="display:none">Create</button>
+    		<button class=btn btn-info id="tag-delete-button" style="display:none">Delete</button>
+    		<button class=btn btn-info id="tag-edit-button" style="display:none">Edit</button>
+    		<button class=btn btn-info id="tag-ok-button" style="display:none">Ok</button>
+    	</div>
+  </div>
+    </div>
+
+<!-- div for attributes edit modal -->
+ <div id="stack-attribute-dialog">
+ </div>  
+
+
+<div class="modal fade bs-example-modal-sm" id = "attribute-edit-console" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+  
+    <div class="modal-content">
+     	<div class="modal-header">
+     		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h5 class="modal-title" id="myModalLabel">Edit Attributes</h5>
+		</div>
+  		
+		<div class="modal-body attribute-list">
+		</div>
+
+  		<div class="modal-footer">
+    		
+    		<button class=btn btn-info id="attr-edit-button">Edit</button>
+    		<button class=btn btn-info id="attr-ok-button">Ok</button>
+    	</div>
+  </div>
+    </div>
+
+<!-- modal for configuration options for each environment -->
+<!-- Modal -->
+		  	<div class="configuration-modal" id="env-config-modal">
+				Configuration options
+			
+				<div class="control-groups">
+				
+					{%if not selected_status %}
+						{% for status in status_list %}	
+							{% for options in status %}
+								<input type="checkbox" name="env-config-controls" id="env-config-controls" data-value="{{options}}" checked>
+							 	<font size="4"> {{ options }} </font>
+					 	
+					 	<br>
+					 		{% endfor %}
+					 	{% endfor %}
+					 
+					 {%else %}
+						{% for status in status_list %}	
+							{% for options in status %}		
+
+								{% if options in selected_status %}
+									
+										<input type="checkbox" name="env-config-controls" id="env-config-controls" data-value="{{options}}" checked>
+										<font size="4"> {{ options }} </font>
+								{% else %}
+										<input type="checkbox" name="env-config-controls" id="env-config-controls" data-value="{{options}}">
+										<font size="4"> {{ options }} </font>
+								{% endif %} 
+								<br>
+							{% endfor %}
+						{%endfor %}					  
+					{%endif%}
+				</div>
+
+				<br>
+				<hr>
+				
+			</div>
+					
+		 
+	<div class="action-parameters" id="action-parameters-div"></div>
+
+  </div>
+</div>
+<!-- end of body content -->
+{% endblock body-content %}
