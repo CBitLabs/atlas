@@ -694,7 +694,7 @@ class AwsHelper:
             self.ah_obj.print_exception("aws_helper.py", "get_aws_instances()", exp_object, exc_type, exc_obj, exc_tb)
             return
 
-     #get all environments and corresponding subnets from bitsight json file
+     #get all environments and corresponding subnets from json file
     def get_environment_subnets_details(self):
         try:
             subnet_list = []
